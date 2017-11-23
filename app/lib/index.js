@@ -1,5 +1,7 @@
 'use strict'
 
-var storage = require('./persist')
+var storage = require('./storage')
 
-module.exports = { storage }
+module.exports = {
+  storage
+}
