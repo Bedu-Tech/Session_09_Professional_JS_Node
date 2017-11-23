@@ -11,14 +11,14 @@ router.use(bodyParser.urlencoded({ extended: true }))
 
 router.get('/', function (req, res) {
   var users = storage.getUsers()
-  res.json({
+  return res.json({
     data: users
   })
 })
 
 router.post('/new/:username', function (req, res) {
   if (!req.body.first_name) {
-    res.status(400).send({
+    return res.status(400).send({
       statusCode: 400,
       error: 'Bad request',
       message: 'Not first name provided'
@@ -26,7 +26,7 @@ router.post('/new/:username', function (req, res) {
   }
 
   if (!req.body.last_name) {
-    res.status(400).send({
+    return res.status(400).send({
       statusCode: 400,
       error: 'Bad request',
       message: 'Not last name provided'
@@ -37,7 +37,7 @@ router.post('/new/:username', function (req, res) {
   var userExist = storage.userExist(userName)
   
   if (userExist) {
-    res.status(400).send({
+    return res.status(400).send({
       statusCode: 400,
       error: 'Bad request',
       message: 'The username ' + userName + ' already exists'
@@ -53,7 +53,7 @@ router.post('/new/:username', function (req, res) {
     sex: (!req.body.sex) ? null : req.body.sex
   }
   storage.saveUser(users, newUser)
-  res.json({
+  return res.json({
     success: true,
     messages: 'User created successfully',
     user: newUser
