@@ -2,7 +2,9 @@
   "name": "bedu-node-app",
   "version": "0.1.0",
   "description": "A node.js app",
-  "scripts": {},
+  "scripts": {
+    "dev": "nodemon ./app/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/coderdiaz/bedu-node-app.git"
@@ -20,5 +22,8 @@
     "express": "^4.16.2",
     "node-persist": "^2.1.0",
     "uuid": "^3.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1"
   }
 }
