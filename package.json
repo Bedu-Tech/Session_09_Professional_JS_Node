@@ -17,6 +17,8 @@
   "homepage": "https://github.com/coderdiaz/bedu-node-app#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "node-persist": "^2.1.0",
+    "uuid": "^3.1.0"
   }
 }
