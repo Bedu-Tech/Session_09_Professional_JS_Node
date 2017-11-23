@@ -108,4 +108,91 @@ router.get('/status/:username/:smartlockname', function (req, res) {
   })
 })
 
+router.post('/share', function (req, res) {
+  if (!req.body.owner) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The owner field not provided'
+    })
+  }
+
+  if (!req.body.device) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The device field not provided'
+    })
+  }
+
+  if (!req.body.shareWith) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The shareWith field not provided'
+    })
+  }
+
+  var owner = req.body.owner
+  var device = req.body.device
+  var userShareWith = req.body.shareWith
+
+  var userExist = storage.userExist(owner)
+  
+  if (!userExist) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The user ' + owner + ' not exist'
+    })
+  }
+
+  var smartLockExist = storage.deviceExist(device)
+  
+  if (!smartLockExist) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The smartlock ' + device + ' not exist'
+    })
+  }
+
+  var userShareExist = storage.userExist(userShareWith)
+  
+  if (!userShareExist) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The user for share ' + usershareWith + ' not exist'
+    })
+  }
+
+  var userHasAccess = storage.userHasAccessToDevice(owner, device)
+  
+  if (!userHasAccess) {
+    return res.status(401).send({
+      statusCode: 401,
+      error: 'Unauthorized',
+      message: 'Unauthorized'
+    })
+  }
+
+  var userShareHasAccess = storage.userHasAccessToDevice(userShareWith, device)
+
+  if (userHasAccess) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The user ' + userShareWith + ' already has access'
+    })
+  }
+
+  storage.addAccessToDevice(userShareWith, device)
+
+  return res.json({
+    success: true,
+    message: 'Device shared successfully'
+  })
+})
+
 module.exports = router
