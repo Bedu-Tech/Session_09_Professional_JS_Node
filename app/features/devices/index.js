@@ -195,4 +195,72 @@ router.post('/share', function (req, res) {
   })
 })
 
+router.post('/status', function (req, res) {
+  if (!req.body.owner) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The owner field not provided'
+    })
+  }
+
+  if (!req.body.device) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The device field not provided'
+    })
+  }
+
+  if (typeof req.body.locked == 'undefined') {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The locked field not provided'
+    })
+  }
+
+  var owner = req.body.owner
+  var smartLockName = req.body.device
+  var smartLockStatus = req.body.locked
+  
+  var userExist = storage.userExist(owner)
+  
+  if (!userExist) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The user ' + owner + ' not exist'
+    })
+  }
+
+  var smartLockExist = storage.deviceExist(smartLockName)
+
+  if (!smartLockExist) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The smartlock ' + smartLockName + ' not exist'
+    })
+  }
+
+  var userHasAccess = storage.userHasAccessToDevice(owner, smartLockName)
+
+  if (!userHasAccess) {
+    return res.status(401).send({
+      statusCode: 401,
+      error: 'Unauthorized',
+      message: 'Unauthorized'
+    })
+  }
+
+  storage.updateDeviceStatus(smartLockStatus, smartLockName)
+
+  return res.json({
+    success: true,
+    message: 'The smarlock status has changed successfully',
+    status: (smartLockStatus) ? 'locked' : 'unlocked'
+  })
+})
+
 module.exports = router
