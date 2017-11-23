@@ -89,11 +89,73 @@ var saveDevice = function (devices, newDevice) {
   return devices
 }
 
+/**
+ * Function to known if device exist in storage
+ * @param {String} deviceName
+ * @return Boolean
+ */
+var deviceExist = function (deviceName) {
+  var exist = false
+  var devices = persist.getItemSync('devices')
+  if (typeof devices == 'undefined') {
+    devices = []
+  }
+  devices.map(function (device) {
+    if (device.name === deviceName) {
+      exist = true
+    }
+  })
+
+  return exist
+}
+
+/**
+ * Function to get device by name
+ * @param {String} deviceName 
+ * @return Object
+ */
+var deviceFind = function (deviceName) {
+  var matchedDevice
+  var devices = persist.getItemSync('devices')
+  if (typeof devices == 'undefined') {
+    devices = []
+  }
+  devices.map(function (device) {
+    if (device.name === deviceName) {
+      matchedDevice = device
+    }
+  })
+
+  return matchedDevice
+}
+
+/**
+ * Function to known if the user has access to device
+ * @param {String} userName 
+ * @param {String} deviceName 
+ * @return Boolean
+ */
+var userHasAccessToDevice = function (userName, deviceName) {
+  var hasAccess = false
+  var device = deviceFind(deviceName)
+  var usersWithAccess = device.accessTo
+  usersWithAccess.map(function (access) {
+    if (access.user === userName) {
+      hasAccess = true
+    }
+  })
+
+  return hasAccess
+}
+
 module.exports = {
   getUsers,
   saveUser,
   userExist,
   userFind,
   getDevices,
-  saveDevice
+  saveDevice,
+  deviceExist,
+  deviceFind,
+  userHasAccessToDevice
 }
