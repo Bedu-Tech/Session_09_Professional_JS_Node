@@ -34,6 +34,16 @@ router.post('/new/:username', function (req, res) {
   }
 
   var userName = req.params.username
+  var userExist = storage.userExist(userName)
+  
+  if (userExist) {
+    res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The username ' + userName + ' already exists'
+    })
+  }
+
   var users = storage.getUsers()
   var newUser = {
     _id: uuid(),
