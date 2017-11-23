@@ -157,6 +157,30 @@ var addAccessToDevice = function (userName, deviceName) {
 }
 
 /**
+ * Function to set a new status to device
+ * @param {Boolean} status 
+ * @param {String} deviceName 
+ * @return void
+ */
+var updateDeviceStatus = function (status, deviceName) {
+  var matchedDevice
+  var indexDevice
+
+  var devices = getDevices()
+  devices.map(function (device, index) {
+    if (device.name === deviceName) {
+      matchedDevice = device
+      indexDevice = index
+    }
+  })
+  matchedDevice.locked = status
+  matchedDevice.modifiedAt = new Date()
+  devices[indexDevice] = matchedDevice
+
+  persist.setItemSync('devices', devices)
+}
+
+/**
  * Function to known if the user has access to device
  * @param {String} userName 
  * @param {String} deviceName 
@@ -185,5 +209,6 @@ module.exports = {
   deviceExist,
   deviceFind,
   userHasAccessToDevice,
-  addAccessToDevice
+  addAccessToDevice,
+  updateDeviceStatus
 }
