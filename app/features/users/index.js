@@ -6,47 +6,43 @@ var bodyParser = require('body-parser')
 var {storage} = require('../../lib')
 var uuid = require('uuid/v4')
 
+router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({ extended: true }))
 
-/**
- * Function to get users from storage
- * @return Array
- */
-var getUsers = function () {
-  var users = storage.getItemSync('users')
-  if (typeof users == 'undefined') {
-    users = []
-  }
-  return users
-}
-
-/**
- * Function for save user to storage
- * @param {Array} users
- * @param {Object} newUser
- * @return Array
- */
-var saveUser = function (users, newUser) {
-  users.push(newUser)
-  storage.setItemSync('users', users)
-  return users
-}
-
 router.get('/', function (req, res) {
-  var users = storage.getItemSync('users')
+  var users = storage.getUsers()
   res.json({
     data: users
   })
 })
 
 router.post('/new/:username', function (req, res) {
+  if (!req.body.first_name) {
+    res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'Not first name provided'
+    })
+  }
+
+  if (!req.body.last_name) {
+    res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'Not last name provided'
+    })
+  }
+
   var userName = req.params.username
-  var users = getUsers()
+  var users = storage.getUsers()
   var newUser = {
     _id: uuid(),
-    username: userName
+    username: userName,
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+    sex: (!req.body.sex) ? null : req.body.sex
   }
-  saveUser(users, newUser)
+  storage.saveUser(users, newUser)
   res.json({
     success: true,
     messages: 'User created successfully',
