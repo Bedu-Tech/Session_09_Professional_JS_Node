@@ -1,0 +1,22 @@
+{
+  "name": "bedu-node-app",
+  "version": "0.1.0",
+  "description": "A node.js app",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coderdiaz/bedu-node-app.git"
+  },
+  "keywords": [
+    "node"
+  ],
+  "author": "Javier Diaz",
+  "bugs": {
+    "url": "https://github.com/coderdiaz/bedu-node-app/issues"
+  },
+  "homepage": "https://github.com/coderdiaz/bedu-node-app#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2"
+  }
+}
