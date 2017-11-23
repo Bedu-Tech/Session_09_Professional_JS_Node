@@ -11,14 +11,14 @@ router.use(bodyParser.urlencoded({ extended: true }))
 
 router.get('/', function (req, res) {
   var devices = storage.getDevices()
-  res.json({
+  return res.json({
     data: devices
   })
 })
 
 router.post('/new/:name', function (req, res) {
   if (!req.body.username) {
-    res.status(400).send({
+    return res.status(400).send({
       statusCode: 400,
       error: 'Bad request',
       message: 'Not username provided to link smartlock'
@@ -27,7 +27,7 @@ router.post('/new/:name', function (req, res) {
   var userExist = storage.userExist(req.body.username)
 
   if (!userExist) {
-    res.status(400).send({
+    return res.status(400).send({
       statusCode: 400,
       error: 'Bad request',
       message: 'Username provided not exist'
@@ -45,11 +45,12 @@ router.post('/new/:name', function (req, res) {
         user: userName
       }
     ],
+    locked: false,
     createdAt: new Date(),
     modifiedAt: new Date()
   }
   storage.saveDevice(devices, newDevice)
-  res.json({
+  return res.json({
     success: true,
     messages: 'Devices created successfully',
     device: newDevice
