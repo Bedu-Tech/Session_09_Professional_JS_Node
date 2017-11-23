@@ -179,7 +179,7 @@ router.post('/share', function (req, res) {
 
   var userShareHasAccess = storage.userHasAccessToDevice(userShareWith, device)
 
-  if (userHasAccess) {
+  if (userShareHasAccess) {
     return res.status(400).send({
       statusCode: 400,
       error: 'Bad request',
