@@ -36,6 +36,16 @@ router.post('/new/:name', function (req, res) {
 
   var userName = req.body.username
   var deviceName = req.params.name
+  var deviceExist = storage.deviceExist(deviceName)
+
+  if (deviceExist) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'This device name already exist'
+    })
+  }
+
   var devices = storage.getDevices()
   var newDevice = {
     _id: uuid(),
@@ -54,6 +64,47 @@ router.post('/new/:name', function (req, res) {
     success: true,
     messages: 'Devices created successfully',
     device: newDevice
+  })
+})
+
+router.get('/status/:username/:smartlockname', function (req, res) {
+  var userName = req.params.username
+  var smartLockName = req.params.smartlockname
+  
+  var userExist = storage.userExist(userName)
+  
+  if (!userExist) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The user ' + userName + ' not exist'
+    })
+  }
+
+  var smartLockExist = storage.deviceExist(smartLockName)
+
+  if (!smartLockExist) {
+    return res.status(400).send({
+      statusCode: 400,
+      error: 'Bad request',
+      message: 'The smartlock ' + smartLockName + ' not exist'
+    })
+  }
+
+  var userHasAccess = storage.userHasAccessToDevice(userName, smartLockName)
+
+  if (!userHasAccess) {
+    return res.status(401).send({
+      statusCode: 401,
+      error: 'Unauthorized',
+      message: 'Unauthorized'
+    })
+  }
+
+  var device = storage.deviceFind(smartLockName)
+
+  return res.send({
+    status: (device.locked) ? 'locked' : 'unlocked'
   })
 })
 
