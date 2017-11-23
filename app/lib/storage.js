@@ -130,6 +130,33 @@ var deviceFind = function (deviceName) {
 }
 
 /**
+ * Function to share device with other user
+ * @param {String} userName 
+ * @param {String} deviceName 
+ * @return void
+ */
+var addAccessToDevice = function (userName, deviceName) {
+  var matchedDevice
+  var indexDevice
+
+  var devices = getDevices()
+  devices.map(function (device, index) {
+    if (device.name === deviceName) {
+      matchedDevice = device
+      indexDevice = index
+    }
+  })
+  var newAccess = {
+    user: userName
+  }
+  matchedDevice.accessTo.push(newAccess)
+  matchedDevice.modifiedAt = new Date()
+  devices[indexDevice] = matchedDevice
+
+  persist.setItemSync('devices', devices)
+}
+
+/**
  * Function to known if the user has access to device
  * @param {String} userName 
  * @param {String} deviceName 
@@ -157,5 +184,6 @@ module.exports = {
   saveDevice,
   deviceExist,
   deviceFind,
-  userHasAccessToDevice
+  userHasAccessToDevice,
+  addAccessToDevice
 }
